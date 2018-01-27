@@ -1,3 +1,5 @@
+package com.felixlimanta.VigenerePlayfair;
+
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -12,7 +14,6 @@ public class PlayfairCipher {
 
   private String key;
   private char[][] table;
-  private int length;
   private Queue<Integer> padList;
 
   public PlayfairCipher(String key) {

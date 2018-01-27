@@ -1,3 +1,5 @@
+package com.felixlimanta.VigenerePlayfair;
+
 public class VigenereCipher {
 
   private String key;
