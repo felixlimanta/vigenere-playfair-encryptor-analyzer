@@ -12,21 +12,21 @@ public class AlphabeticVigenereCipherTest {
   }
 
   @Test
-  public void encipher() throws Exception {
+  public void encrypt() throws Exception {
     AlphabeticVigenereCipher cipher = new AlphabeticVigenereCipher("VIGENERECIPHER");
     assertEquals(
         "WMCEEIKLGRPIFVMEUGXQPWQVIOIAVEYXUEKFKBTALVXTGAFXYEVKPAGY",
-        cipher.encipher("Beware the Jabberwock, my son! The jaws that bite, the claws that catch!")
+        cipher.encrypt("Beware the Jabberwock, my son! The jaws that bite, the claws that catch!")
             .replaceAll("[^A-Z]", "")
     );
   }
 
   @Test
-  public void decipher() throws Exception {
+  public void decrypt() throws Exception {
     AlphabeticVigenereCipher cipher = new AlphabeticVigenereCipher("VIGENERECIPHER");
     assertEquals(
         "BEWARETHEJABBERWOCKMYSONTHEJAWSTHATBITETHECLAWSTHATCATCH",
-        cipher.decipher("WMCEEIKLGRPIFVMEUGXQPWQVIOIAVEYXUEKFKBTALVXTGAFXYEVKPAGY")
+        cipher.decrypt("WMCEEIKLGRPIFVMEUGXQPWQVIOIAVEYXUEKFKBTALVXTGAFXYEVKPAGY")
     );
   }
 }
