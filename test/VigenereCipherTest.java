@@ -18,7 +18,7 @@ public class VigenereCipherTest {
     VigenereCipher cipher = new VigenereCipher("VIGENERECIPHER");
     assertEquals(
         "WMCEEIKLGRPIFVMEUGXQPWQVIOIAVEYXUEKFKBTALVXTGAFXYEVKPAGY",
-        cipher.encrypt("Beware the Jabberwock, my son! The jaws that bite, the claws that catch!", false)
+        cipher.encrypt("Beware the Jabberwock, my son! The jaws that bite, the claws that catch!")
             .replaceAll("[^A-Z]", "")
     );
   }
@@ -28,18 +28,7 @@ public class VigenereCipherTest {
     VigenereCipher cipher = new VigenereCipher("VIGENERECIPHER");
     assertEquals(
         "BEWARETHEJABBERWOCKMYSONTHEJAWSTHATBITETHECLAWSTHATCATCH",
-        cipher.decrypt("WMCEEIKLGRPIFVMEUGXQPWQVIOIAVEYXUEKFKBTALVXTGAFXYEVKPAGY", false)
+        cipher.decrypt("WMCEEIKLGRPIFVMEUGXQPWQVIOIAVEYXUEKFKBTALVXTGAFXYEVKPAGY")
     );
-  }
-
-  @Test
-  public void fullEncryptDecrypt() throws Exception {
-    VigenereCipher cipher = new VigenereCipher("VIGENERECIPHER");
-
-    String text = "BEWARETHEJABBERWOCKMYSONTHEJAWSTHATBITETHECLAWSTHATCATCH";
-    String encrypted = cipher.encrypt("BEWARETHEJABBERWOCKMYSONTHEJAWSTHATBITETHECLAWSTHATCATCH", true);
-    String processed = cipher.decrypt(encrypted,true);
-
-    assertEquals(text, processed);
   }
 }
