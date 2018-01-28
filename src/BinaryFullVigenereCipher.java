@@ -1,6 +1,6 @@
 package com.felixlimanta.VigenerePlayfair;
 
-public class FullVigenereCipher {
+public class BinaryFullVigenereCipher {
 
   private String key;
 
@@ -9,7 +9,7 @@ public class FullVigenereCipher {
   private final static Operation decipherOp =
       (text, key) -> (byte) ((text - key + 256) % 256);
 
-  public FullVigenereCipher(String key) {
+  public BinaryFullVigenereCipher(String key) {
     setKey(key);
   }
 

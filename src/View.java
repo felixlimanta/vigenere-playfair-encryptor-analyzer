@@ -131,7 +131,8 @@ public class View extends JFrame {
 
   private void setUpOpenButtonListener() {
     openButton.addActionListener(e -> {
-      fileChooser.setDialogTitle("Open encrypted file");
+      String title = "Open file to be " + (encrypt ? "encrypted" : "decrypted");
+      fileChooser.setDialogTitle(title);
       int returnVal = fileChooser.showOpenDialog(rootPanel);
       if (returnVal == JFileChooser.APPROVE_OPTION) {
         String path = fileChooser.getSelectedFile().getPath();
@@ -181,7 +182,7 @@ public class View extends JFrame {
 
       if (binary) {
         if (outputBytes == null || outputBytes.length == 0) {
-          showError("Nothiing to save. Encrypt file first.");
+          showError("Nothiing to save. " + (encrypt ? "Encrypt" : "Decrypt") + " file first.");
           return;
         }
       } else {
@@ -191,12 +192,12 @@ public class View extends JFrame {
           case 2: text = groupedOutputTextArea.getText(); break;
         }
         if (text.equals("")) {
-          showError("Encrypted text area is empty. Encrypt text first.");
+          showError("Output text area is empty " + (encrypt ? "Encrypt" : "Decrypt") + " Encrypt text first.");
           return;
         }
       }
 
-      fileChooser.setDialogTitle("Save encrypted file");
+      fileChooser.setDialogTitle("Save  " + (encrypt ? "encrpyted" : "decrypted") + "  file");
       int returnVal = fileChooser.showSaveDialog(rootPanel);
       if (returnVal == JFileChooser.APPROVE_OPTION) {
         path = fileChooser.getSelectedFile().getPath();
@@ -214,7 +215,7 @@ public class View extends JFrame {
       inputBytes = Files.readAllBytes(Paths.get(path));
       if (binary)
         return "";
-      return new String(inputBytes, "UTF-16");
+      return new String(inputBytes, "UTF-8");
     } catch (Exception ex) {
       showError("File does not exist or cannot be opened.");
       return "";
@@ -249,16 +250,11 @@ public class View extends JFrame {
           return vigenereCipher.decrypt(text);
 
       case 1:
-        try {
-          FullVigenereCipher fullVigenereCipher = new FullVigenereCipher(key);
-          inputBytes = text.getBytes();
-          if (encrypt)
-            return new String(fullVigenereCipher.encrypt(inputBytes), "UTF-16");
-          else
-            return new String(fullVigenereCipher.encrypt(inputBytes), "UTF-16");
-        } catch (Exception ex) {
-          return "";
-        }
+        vigenereCipher = new VigenereCipher(key);
+        if (encrypt)
+          return vigenereCipher.fullEncrypt(text);
+        else
+          return vigenereCipher.fullDecrypt(text);
 
       case 2:
         PlayfairCipher playfairCipher = new PlayfairCipher(key);
@@ -273,11 +269,11 @@ public class View extends JFrame {
   }
 
   private byte[] processBinary(String key, byte[] contents) {
-    FullVigenereCipher fullVigenereCipher = new FullVigenereCipher(key);
+    BinaryFullVigenereCipher cipher = new BinaryFullVigenereCipher(key);
     if (encrypt)
-      return fullVigenereCipher.encrypt(contents);
+      return cipher.encrypt(contents);
     else
-      return fullVigenereCipher.decrypt(contents);
+      return cipher.decrypt(contents);
   }
 
   private String stripNonalphabeticChars(String text) {
