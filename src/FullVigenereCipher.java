@@ -3,7 +3,6 @@ package com.felixlimanta.VigenerePlayfair;
 public class FullVigenereCipher {
 
   private String key;
-  private byte[] bytes;
 
   private final static Operation encipherOp =
       (text, key) -> (byte) ((text + key) % 256);
@@ -12,10 +11,6 @@ public class FullVigenereCipher {
 
   public FullVigenereCipher(String key) {
     setKey(key);
-  }
-
-  public String getKey() {
-    return key;
   }
 
   public void setKey(String key) {
@@ -31,7 +26,7 @@ public class FullVigenereCipher {
   }
 
   private byte[] processVigenere(byte[] text, Operation operation) {
-    bytes = new byte[text.length];
+    byte[] bytes = new byte[text.length];
 
     for (int i = 0, j = 0; i < text.length; ++i, j = (j + 1) % key.length()) {
       byte c = text[i];

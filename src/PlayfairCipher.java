@@ -12,7 +12,6 @@ public class PlayfairCipher {
   private final static char missingLetter = 'J';
   private final static char replacementLetter = 'I';
 
-  private String key;
   private char[][] table;
   private Queue<Integer> padList;
 
@@ -21,11 +20,11 @@ public class PlayfairCipher {
   }
 
   public void setKey(String key) {
-    this.key = preprocessText(key);
+    key = preprocessText(key);
 
     // Remove duplicate letters
     Set<Character> charSet = new LinkedHashSet<>();
-    for (char c: this.key.toCharArray()) {
+    for (char c: key.toCharArray()) {
       charSet.add(c);
     }
 
@@ -35,9 +34,8 @@ public class PlayfairCipher {
 
     // Add rest of characters to queue
     for (char c = 'A'; c <= 'Z'; ++c) {
-      if (!charSet.contains(c) && c != missingLetter) {
+      if (!charSet.contains(c) && c != missingLetter)
         queue.add(c);
-      }
     }
 
     // Build table
@@ -52,13 +50,13 @@ public class PlayfairCipher {
   public String encrypt(String text) {
     String encoded = encodeAsDigraph(text);
     String encrypted = processDigraph(encoded, true);
-    return recoverTextFormat(text, encoded, encrypted);
+    return recoverTextFormat(text, encrypted);
   }
 
   public String decrypt(String text) {
     String encoded = encodeAsDigraph(text);
     String encrypted = processDigraph(encoded, false);
-    return recoverTextFormat(text, encoded, encrypted);
+    return recoverTextFormat(text, encrypted);
   }
 
   private String encodeAsDigraph(String text) {
@@ -136,7 +134,7 @@ public class PlayfairCipher {
         .replace(Character.toString(missingLetter), Character.toString(replacementLetter));
   }
 
-  private String recoverTextFormat(String plain, String encoded, String encrypted) {
+  private String recoverTextFormat(String plain, String encrypted) {
     StringBuilder res = new StringBuilder();
     plain = plain.toUpperCase();
     int i, j, padLoc;
@@ -147,15 +145,13 @@ public class PlayfairCipher {
         res.append(encrypted.charAt(j++));
         padLoc = padList.remove();
       }
-      while (i < plain.length() && !Character.isLetter(plain.charAt(i))) {
+      while (i < plain.length() && !Character.isLetter(plain.charAt(i)))
         res.append(plain.charAt(i++));
-      }
       if (i < plain.length() && j < encrypted.length())
         res.append(encrypted.charAt(j));
     }
-    while (i < plain.length() && !Character.isLetter(plain.charAt(i))) {
+    while (i < plain.length() && !Character.isLetter(plain.charAt(i)))
       res.append(plain.charAt(i++));
-    }
     return res.toString();
   }
 }

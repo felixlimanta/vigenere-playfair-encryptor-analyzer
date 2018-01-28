@@ -25,35 +25,35 @@ public class View extends JFrame {
       "Vigenere cipher (extended)",
       "Playfair cipher"
   };
-
-  private static final String[] paneLabels = {
-      "Plaintext: ", "Ciphertext: "
-  };
-
   private static final String[] buttonLabels = {
       "Encrypt", "Save Encrypted File",
       "Decrypt", "Save Decrypted File"
   };
 
-  private JComboBox algorithmSelectorComboBox;
   private JPanel rootPanel;
+
+  private JComboBox algorithmSelectorComboBox;
   private JRadioButton encryptRadio;
   private JRadioButton decryptRadio;
+  private JCheckBox binaryCheckbox;
+
   private JButton openButton;
   private JLabel pathLabel;
+
   private JTextField keyField;
+
   private JPanel inputPanel;
   private JTextArea inputTextArea;
+  private JButton processButton;
+
   private JPanel outputPanel;
+  private JTabbedPane outputFormatTabs;
   private JTextArea preservedOutputTextArea;
   private JTextArea strippedOutputTextArea;
   private JTextArea groupedOutputTextArea;
-  private JButton processButton;
   private JButton saveOutputButton;
-  private JCheckBox binaryCheckbox;
-  private JTabbedPane outputFormatTabs;
-  private JFileChooser fileChooser;
 
+  private JFileChooser fileChooser;
   private Border plaintextBorder;
   private Border ciphertextBorder;
 
@@ -145,29 +145,20 @@ public class View extends JFrame {
     processButton.addActionListener(e -> {
       String key = keyField.getText();
       if (key.equals("")) {
-        JOptionPane.showMessageDialog(rootPanel,
-            "Key cannot be empty.",
-            "Error",
-            JOptionPane.ERROR_MESSAGE);
+        showError("Key cannot be empty.");
         return;
       }
 
       if (binary) {
         if (inputBytes == null || inputBytes.length == 0) {
-          JOptionPane.showMessageDialog(rootPanel,
-              "Input not set. Load file first.",
-              "Error",
-              JOptionPane.ERROR_MESSAGE);
+          showError("Input not set. Load file first.");
           return;
         }
         outputBytes = processBinary(key, inputBytes);
       } else {
         String text = inputTextArea.getText();
         if (text.equals("")) {
-          JOptionPane.showMessageDialog(rootPanel,
-              "Input not set. Load file or type it in the text area first.",
-              "Error",
-              JOptionPane.ERROR_MESSAGE);
+          showError("Input not set. Load file or type it in the text area first.");
           return;
         }
         String preserved = processText(key, text);
@@ -179,11 +170,7 @@ public class View extends JFrame {
         groupedOutputTextArea.setText(grouped);
         outputBytes = preserved.getBytes();
       }
-
-      JOptionPane.showMessageDialog(rootPanel,
-          encrypt ? "Encryption done" : "Decryption done",
-          "Success",
-          JOptionPane.INFORMATION_MESSAGE);
+      showInfo(encrypt ? "Encryption done" : "Decryption done");
     });
   }
 
@@ -194,10 +181,7 @@ public class View extends JFrame {
 
       if (binary) {
         if (outputBytes == null || outputBytes.length == 0) {
-          JOptionPane.showMessageDialog(rootPanel,
-              "Nothiing to save. Encrypt file first.",
-              "Error",
-              JOptionPane.ERROR_MESSAGE);
+          showError("Nothiing to save. Encrypt file first.");
           return;
         }
       } else {
@@ -206,12 +190,8 @@ public class View extends JFrame {
           case 1: text = strippedOutputTextArea.getText(); break;
           case 2: text = groupedOutputTextArea.getText(); break;
         }
-
         if (text.equals("")) {
-          JOptionPane.showMessageDialog(rootPanel,
-              "Encrypted text area is empty. Encrypt text first.",
-              "Error",
-              JOptionPane.ERROR_MESSAGE);
+          showError("Encrypted text area is empty. Encrypt text first.");
           return;
         }
       }
@@ -225,11 +205,7 @@ public class View extends JFrame {
         else
           saveFile(path, text);
       }
-
-      JOptionPane.showMessageDialog(rootPanel,
-          "File saved to " + path,
-          "Success",
-          JOptionPane.INFORMATION_MESSAGE);
+      showInfo("File saved to " + path);
     });
   }
 
@@ -240,10 +216,7 @@ public class View extends JFrame {
         return "";
       return new String(inputBytes, "UTF-16");
     } catch (Exception ex) {
-      JOptionPane.showMessageDialog(rootPanel,
-          "File does not exist or cannot be opened.",
-          "Error",
-          JOptionPane.ERROR_MESSAGE);
+      showError("File does not exist or cannot be opened.");
       return "";
     }
   }
@@ -252,10 +225,7 @@ public class View extends JFrame {
     try (FileWriter fw = new FileWriter(path)) {
       fw.write(text);
     } catch (Exception ex) {
-      JOptionPane.showMessageDialog(rootPanel,
-          "Error saving file to specified path.",
-          "Error",
-          JOptionPane.ERROR_MESSAGE);
+      showError("Error saving file to specified path.");
       ex.printStackTrace();
     }
   }
@@ -264,46 +234,38 @@ public class View extends JFrame {
     try {
       Files.write(Paths.get(path), contents);
     } catch (Exception ex) {
-      JOptionPane.showMessageDialog(rootPanel,
-          "Error saving file to specified path.",
-          "Error",
-          JOptionPane.ERROR_MESSAGE);
+      showError("Error saving file to specified path.");
       ex.printStackTrace();
     }
   }
 
   private String processText(String key, String text) {
-    int selectedAlg = algorithmSelectorComboBox.getSelectedIndex();
-
-    switch (selectedAlg) {
+    switch (algorithmSelectorComboBox.getSelectedIndex()) {
       case 0:
         VigenereCipher vigenereCipher = new VigenereCipher(key);
-        if (encrypt) {
+        if (encrypt)
           return vigenereCipher.encrypt(text);
-        } else {
+        else
           return vigenereCipher.decrypt(text);
-        }
 
       case 1:
         try {
           FullVigenereCipher fullVigenereCipher = new FullVigenereCipher(key);
           inputBytes = text.getBytes();
-          if (encrypt) {
+          if (encrypt)
             return new String(fullVigenereCipher.encrypt(inputBytes), "UTF-16");
-          } else {
+          else
             return new String(fullVigenereCipher.encrypt(inputBytes), "UTF-16");
-          }
         } catch (Exception ex) {
           return "";
         }
 
       case 2:
         PlayfairCipher playfairCipher = new PlayfairCipher(key);
-        if (encrypt) {
+        if (encrypt)
           return playfairCipher.encrypt(text);
-        } else {
+        else
           return playfairCipher.decrypt(text);
-        }
 
       default:
         return "";
@@ -318,12 +280,12 @@ public class View extends JFrame {
       return fullVigenereCipher.decrypt(contents);
   }
 
-  private static String stripNonalphabeticChars(String text) {
+  private String stripNonalphabeticChars(String text) {
     return text.toUpperCase()
         .replaceAll("[^A-Z]", "");
   }
 
-  private static String insertSpaces(String text, int interval) {
+  private String insertSpaces(String text, int interval) {
     StringBuilder sb = new StringBuilder(text);
     int length = text.length() / 5 * 6;
     for (int i = interval; i < length; i += (interval + 1)) {
@@ -332,4 +294,11 @@ public class View extends JFrame {
     return sb.toString();
   }
 
+  private void showError(String message) {
+    JOptionPane.showMessageDialog(rootPanel, message, "Error", JOptionPane.ERROR_MESSAGE);
+  }
+
+  private void showInfo(String message) {
+    JOptionPane.showMessageDialog(rootPanel, message, "Success", JOptionPane.INFORMATION_MESSAGE);
+  }
 }

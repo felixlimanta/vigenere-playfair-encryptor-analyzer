@@ -3,7 +3,6 @@ package com.felixlimanta.VigenerePlayfair;
 public class VigenereCipher {
 
   private String key;
-  private StringBuilder sb;
 
   private final static Operation encipherOp =
       (text, key) -> (char) ((text + key - 2 * 'A') % 26 + 'A');
@@ -32,7 +31,7 @@ public class VigenereCipher {
   }
 
   private String processVigenere(String text, Operation operation) {
-    sb = new StringBuilder();
+    StringBuilder sb = new StringBuilder();
     text = text.toUpperCase();
 
     for (int i = 0, j = 0; i < text.length(); ++i) {
