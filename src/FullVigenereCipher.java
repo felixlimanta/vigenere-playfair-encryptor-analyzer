@@ -1,15 +1,15 @@
 package com.felixlimanta.VigenerePlayfair;
 
-public class VigenereCipher implements Cipher {
+public class FullVigenereCipher implements Cipher {
 
   private String key;
 
   private final static Operation encipherOp =
-      (text, key) -> (char) ((text + key - 2 * 'A') % 26 + 'A');
+      (text, key) -> (char) ((text + key) % 256);
   private final static Operation decipherOp =
-      (text, key) -> (char) ((text - key + 26) % 26 + 'A');
+      (text, key) -> (char) ((text - key + 256) % 256);
 
-  public VigenereCipher(String key) {
+  public FullVigenereCipher(String key) {
     setKey(key);
   }
 
@@ -18,7 +18,7 @@ public class VigenereCipher implements Cipher {
   }
 
   public void setKey(String key) {
-    this.key = key.toUpperCase().replaceAll("[^A-Z]", "");
+    this.key = key;
   }
 
   public String encrypt(String text) {
@@ -31,17 +31,10 @@ public class VigenereCipher implements Cipher {
 
   private String processVigenere(String text, Operation operation) {
     StringBuilder sb = new StringBuilder();
-    text = text.toUpperCase();
 
-    for (int i = 0, j = 0; i < text.length(); ++i) {
+    for (int i = 0, j = 0; i < text.length(); ++i, j = (j + 1) % key.length()) {
       char c = text.charAt(i);
-
-      if (Character.isLetter(c)) {
-        sb.append(operation.operate(c, key.charAt(j)));
-        j = (j + 1) % key.length();
-      } else {
-        sb.append(c);
-      }
+      sb.append(operation.operate(c, key.charAt(j)));
     }
     return sb.toString();
   }

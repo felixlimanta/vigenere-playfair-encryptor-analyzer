@@ -241,31 +241,17 @@ public class View extends JFrame {
   }
 
   private String processText(String key, String text) {
+    Cipher cipher;
     switch (algorithmSelectorComboBox.getSelectedIndex()) {
-      case 0:
-        VigenereCipher vigenereCipher = new VigenereCipher(key);
-        if (encrypt)
-          return vigenereCipher.encrypt(text);
-        else
-          return vigenereCipher.decrypt(text);
-
-      case 1:
-        vigenereCipher = new VigenereCipher(key);
-        if (encrypt)
-          return vigenereCipher.fullEncrypt(text);
-        else
-          return vigenereCipher.fullDecrypt(text);
-
-      case 2:
-        PlayfairCipher playfairCipher = new PlayfairCipher(key);
-        if (encrypt)
-          return playfairCipher.encrypt(text);
-        else
-          return playfairCipher.decrypt(text);
-
-      default:
-        return "";
+      case 0: cipher = new VigenereCipher(key); break;
+      case 1: cipher = new FullVigenereCipher(key); break;
+      case 2: cipher = new PlayfairCipher(key); break;
+      default: return "";
     }
+    if (encrypt)
+      return cipher.encrypt(text);
+    else
+      return cipher.decrypt(text);
   }
 
   private byte[] processBinary(String key, byte[] contents) {

@@ -6,12 +6,13 @@ import java.util.Queue;
 import java.util.Set;
 import javafx.util.Pair;
 
-public class PlayfairCipher {
+public class PlayfairCipher implements Cipher {
 
   private final static char pad = 'X';
   private final static char missingLetter = 'J';
   private final static char replacementLetter = 'I';
 
+  private String key;
   private char[][] table;
   private Queue<Integer> padList;
 
@@ -19,12 +20,16 @@ public class PlayfairCipher {
     setKey(key);
   }
 
+  public String getKey() {
+    return key;
+  }
+
   public void setKey(String key) {
-    key = preprocessText(key);
+    this.key = preprocessText(key);
 
     // Remove duplicate letters
     Set<Character> charSet = new LinkedHashSet<>();
-    for (char c: key.toCharArray()) {
+    for (char c: this.key.toCharArray()) {
       charSet.add(c);
     }
 
