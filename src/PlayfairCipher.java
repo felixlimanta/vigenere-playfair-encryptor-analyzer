@@ -12,8 +12,8 @@ public class PlayfairCipher implements Cipher {
   private final static char missingLetter = 'J';
   private final static char replacementLetter = 'I';
 
-  private String key;
-  private char[][] table;
+  protected String key;
+  protected char[][] table;
   private Queue<Integer> padList;
 
   public PlayfairCipher(String key) {
@@ -21,7 +21,22 @@ public class PlayfairCipher implements Cipher {
   }
 
   public String getKey() {
-    return key;
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < 5; ++i) {
+      for (int j = 0; j < 5; ++j) {
+        sb.append(table[i][j]);
+      }
+    }
+    return sb.toString();
+  }
+
+  public void printTable() {
+    for (int i = 0; i < 5; ++i) {
+      for (int j = 0; j < 5; ++j) {
+        System.out.print(table[i][j]);
+      }
+      System.out.println();
+    }
   }
 
   public void setKey(String key) {
@@ -64,7 +79,11 @@ public class PlayfairCipher implements Cipher {
     return recoverTextFormat(text, encrypted);
   }
 
-  private String encodeAsDigraph(String text) {
+  protected String decryptEncoded(String text) {
+    return processDigraph(text, false);
+  }
+
+  protected String encodeAsDigraph(String text) {
     StringBuilder sb = new StringBuilder(preprocessText(text));
     padList = new LinkedList<>();
 
